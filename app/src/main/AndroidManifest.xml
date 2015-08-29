@@ -23,6 +23,7 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -30,6 +31,11 @@
         <service
             android:name=".MyIntentService"
             android:exported="false" >
+        </service>
+        <service
+            android:name=".MyStatusService"
+            android:enabled="true"
+            android:exported="true" >
         </service>
     </application>
 

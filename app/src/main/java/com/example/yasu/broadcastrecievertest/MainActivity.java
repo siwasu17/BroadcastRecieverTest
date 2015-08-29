@@ -1,16 +1,52 @@
 package com.example.yasu.broadcastrecievertest;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
+    BroadcastReceiver mReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            TextView t = (TextView)findViewById(R.id.mainTxt);
+            String action = intent.getAction();
+            t.setText("STAUTS: " + action);
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //インテントフィルタの動的設定
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyStatusService.ACTION_INIT);
+        filter.addAction(MyStatusService.ACTION_RUNNING);
+        filter.addAction(MyStatusService.ACTION_DOWNLOADING);
+        filter.addAction(MyStatusService.ACTION_DONE);
+        filter.addAction(MyStatusService.ACTION_DESTROY);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        registerReceiver(mReciever, filter);
+
+        startService(new Intent(getApplicationContext(),MyStatusService.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(getApplicationContext(), MyStatusService.class));
+
+        unregisterReceiver(mReciever);
+        super.onDestroy();
     }
 
     @Override
